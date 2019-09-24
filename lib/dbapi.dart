@@ -1,7 +1,12 @@
 import 'package:masteringflutter/category.dart';
 import 'dart:convert';
-class DbApi {
-  List<Category> getCategories(){
+abstract class DbApi {
+  List<Category> getCategories();
+  static DbApi get me {return _me;}
+  static DbApi _me = _DbApi();
+} 
+class _DbApi implements DbApi {
+  @override List<Category> getCategories(){
     return <Category>[
       Category.fromJson(json.decode('{"id":"01","name":"Motherboard"}')),
       Category.fromJson(json.decode('{"id":"02","name":"Screen"}')),

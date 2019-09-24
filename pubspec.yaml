@@ -14,7 +14,7 @@ description: A remake of the Mastering Flutter course by Robert Brunhage
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.4.0 <3.0.0"
+  sdk: ">=2.5.0 <3.0.0"
 
 dependencies:
   flutter:
