@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:masteringflutter/blocprovider.dart';
 import 'package:masteringflutter/category.dart';
+import 'package:masteringflutter/categorypage.dart';
+import 'package:masteringflutter/product.dart';
 //import 'package:masteringflutter/dbapi.dart';
 
 class HomePage extends StatelessWidget {
@@ -19,8 +21,17 @@ class HomePage extends StatelessWidget {
             return ListView.builder(
               itemBuilder: (context,index){
                 try {return 
-                  Text(snapshot.data[index].name,
-                    style: TextStyle(fontSize: 24.0),
+                  ListTile(
+                    onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => CategoryPage(
+                        products: [
+                          Product.fromJson('{"id":"01","name":"Spion","amount":10}'),
+                          Product.fromJson('{"id":"02","name":"Xenon","amount":324}'),
+                        ],
+                      ))),
+                    title: Text(snapshot.data[index].name,
+                        style: TextStyle(fontSize: 24.0),
+                      ),
                   );
                 } catch(_){ return null;}
             },);

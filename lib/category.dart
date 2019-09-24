@@ -5,10 +5,12 @@ import 'package:masteringflutter/dbapi.dart';
 
 class Category {
   static const NAME = "name";
+  static const ID = "id";
   String id;
   String name;
   Category.fromJson(Map<String,dynamic> jsonMap){
     name = jsonMap[NAME];
+    id = jsonMap[ID];
   }
 }
 class CategoriesBloc implements Disposable {
