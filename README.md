@@ -18,3 +18,7 @@ class DbApi {
   }
 }
 ```
+
+## Bloc Provider
+Honestly, I don't believe in this provider pattern when used with BloCs. Provider is perfectly OK for the Change Notifier machiery, but when using Stream Builder, it makes no sense. Using streams to deliver data to UI was a brilliant idea, I love it, but that's all.
+The only service of the provider is that it implements disposability since it is derived from a stateful widget.

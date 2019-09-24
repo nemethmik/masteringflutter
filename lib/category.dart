@@ -17,8 +17,8 @@ class CategoriesBloc implements Disposable {
   Stream<List<Category>> get categories => _categoryListStream.stream;
   //It does't have to be async since the data are anyway returned in stream
   //which is anyway an async way of returning data.
-  void getCategories(){
-    _categoryList = DbApi.me.getCategories();
+  void getCategories() async {
+    _categoryList = await DbApi.me.getCategories();
     _categoryListStream.add(_categoryList);
   }
   @override

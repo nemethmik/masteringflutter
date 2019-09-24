@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:masteringflutter/blocprovider.dart';
 import 'package:masteringflutter/category.dart';
-import 'package:masteringflutter/dbapi.dart';
+//import 'package:masteringflutter/dbapi.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -12,18 +12,20 @@ class HomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text("E-Commerce"),
       ),
-      body: ListView.builder(
-        //itemCount: dbApi.getCategories().length,
-        itemBuilder: (context,index){
-          // return index < dbApi.getCategories().length
-          //   ? Text(dbApi.getCategories()[index].name)
-          //   : null;
-          try {return 
-            Text(DbApi.me.getCategories()[index].name,
-              style: TextStyle(fontSize: 24.0),
-            );
-          } catch(_){ return null;}
-      },)
+      body: StreamBuilder<List<Category>>(
+        stream: bloc.categories,
+        builder: (context,snapshot){
+          if(snapshot.hasData) {
+            return ListView.builder(
+              itemBuilder: (context,index){
+                try {return 
+                  Text(snapshot.data[index].name,
+                    style: TextStyle(fontSize: 24.0),
+                  );
+                } catch(_){ return null;}
+            },);
+          } else return Center(child: CircularProgressIndicator(),);
+        },)
     );
   }
 }
