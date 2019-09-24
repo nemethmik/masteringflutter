@@ -22,8 +22,9 @@ class _DbApi implements DbApi {
   Future<List<Product>> getProducts(Category category) async {
     await Future.delayed(Duration(seconds: 2));
     return <Product>[
-      Product.fromJson('{"id":"01","name":"Spion","amount":10}'),
-      Product.fromJson('{"id":"02","name":"Xenon","amount":324}'),
+      Product.fromJson('{"id":"01","name":"${category.name}-Spion","amount":10}'),
+      Product.fromJson('{"id":"02","name":"${category.name}-Xenon","amount":324}'),
+      Product.fromJson('{"id":"03","name":"${category.name}-Zoom H1 Recorder","amount":8}'),
     ];
   }
 }

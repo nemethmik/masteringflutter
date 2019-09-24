@@ -20,14 +20,14 @@ class HomePage extends StatelessWidget {
           if(snapshot.hasData) {
             return ListView.builder(
               itemBuilder: (context,index){
-                try {return 
+                try {
+                  return 
                   ListTile(
                     onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => CategoryPage(
-                        products: [
-                          Product.fromJson('{"id":"01","name":"Spion","amount":10}'),
-                          Product.fromJson('{"id":"02","name":"Xenon","amount":324}'),
-                        ],
+                      builder: (context) => BlocProvider(
+                        //bloc: CategoriesBloc(),
+                        bloc: ProductsBloc(snapshot.data[index]),
+                          child: CategoryPage(),
                       ))),
                     title: Text(snapshot.data[index].name,
                         style: TextStyle(fontSize: 24.0),

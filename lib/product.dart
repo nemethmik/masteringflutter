@@ -23,7 +23,7 @@ class Product {
 class ProductsBloc implements Disposable {
   List<Product> _productList;
   final Category _category;
-  final _productStream = StreamController();
+  final _productStream = StreamController<List<Product>>();
   ProductsBloc(this._category) {getProducts();}
   Stream<List<Product>> get products => _productStream.stream;
   @override
