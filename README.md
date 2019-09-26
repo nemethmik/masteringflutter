@@ -64,3 +64,14 @@ BlocProvider(
 ),
 ```
 This sees ok, but in this case why not simply pass the bloc to the page as a parameter? It would be really safe, since the compiler guarantees that you provide the correct bloc to the page.
+
+## BloC Disposing Stateful Pages
+In this commit, I removed bloc provider entirely and I changed all the two pages to a stateful widget just to be able to dispose the blocs.
+The category page received a Category parameter, this is the clean and straightforward way in this architecture where Robert Brunhage didn't introduced the concept of an application logic component.
+Here, blocs are only for serving data to the pages, and the navigation control and UI event handling all are done by the widgets themselves.
+This is not necessarily bad, but definitely, when you want to understand how the application works, you have to read the entire source code.
+When having interfaces for events and commands, it's enough just to review them.
+What is tricky here that the products bloc is created with a category parameter, so a singleton global producs bloc is not enough for this architecture. Actually, I like this approach, since every time a category page is opened the products for that category are retrieved, and therefore we don't need a broadcast stream, since the products stream in the products bloc is only listened once, just like as in a HTTP API call. 
+If I used a global singleton products bloc, its products stream should have been defined as a broadcast stream to be ok to serve all category pages during the life of the application. 
+I think that would be a lot simpler solution since then we wouldn't need stateful pages, nor provider package, since a mobile application typically shows one page at a time, no need to create multiple products blocks. page specific blocs/query results could have even been cached in a global singleton bloc, too.
+So whatever hard I study and experiment in this area, I am fully convinced that a single application logic bloc, with broadcast streams could serve the entire application, or at least an entire module/workflow/business process (Goods Receipt, Delivery, Issue for Production, and so on).
