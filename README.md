@@ -95,3 +95,66 @@ class _CategoryPageState extends State<CategoryPage> {
 ```
 In the code sample above, category entity/model object is received as a parameter, and the bloc is created in the state object is built. When the state object is disposed, it disposes the bloc, too.
 This is called cumbersome boiler-plate, which could be nicely eliminated with rearchitecting the application with using singleton blocs (with broadcast streams) only. 
+
+## Provider Alone is not Enough
+This doesn't work 
+```dart
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Provider<CategoriesBloc>(
+      builder: (context) => CategoriesBloc(),
+      dispose: (context,value) => value?.dispose(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("E-Commerce"),
+        ),
+        body: StreamBuilder<List<Category>>(
+          stream: Provider.of<CategoriesBloc>(context).categories,
+          builder: (context,snapshot){
+```
+we receive an exception:
+The following ProviderNotFoundError was thrown building HomePage(dirty):
+Error: Could not find the correct Provider<CategoriesBloc> above this HomePage Widget. Ensure the Provider<CategoriesBloc> is an ancestor to this HomePage Widget.
+
+## Provider and Consumer Works Fine
+Using
+[consumer](https://flutter.dev/docs/development/data-and-backend/state-mgmt/simple#consumer) with provider:
+```dart
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Provider<CategoriesBloc>(
+      builder: (context) => CategoriesBloc(),
+      dispose: (context,bloc) => bloc?.dispose(),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("E-Commerce"),
+        ),
+        body: Consumer<CategoriesBloc>(
+          builder: (context,bloc,child) => StreamBuilder<List<Category>>(
+            stream: bloc.categories,
+            builder: (context,snapshot){
+```
+Dispose is not automatic, but we could make our generic bloc-disposing provider class easily, if we wanted to.
+**Provider.value** is not ok, since it doesn't have dispose parameter.
+
+Here is an even more complete example with the category page where it receives a category entity/model object and makes its own bloc:
+```dart
+class CategoryPage extends StatelessWidget {
+  final Category category;
+  const CategoryPage(this.category,{Key key,}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Provider<ProductsBloc>(
+      builder: (context) => ProductsBloc(category),
+      dispose: (context,bloc)=>bloc?.dispose(),
+      child: Scaffold(
+        appBar: AppBar(),
+        body: Consumer<ProductsBloc>(
+          builder: (context,bloc,child) => StreamBuilder<List<Product>>(
+            stream: bloc.products,
+            builder: (context,snapshot){
+``` 
+So, the category stateless page has a mandatory parameter, which is guaranteed by the Dart compiler.
+The build function creates a products bloc provider widget, which actually builds a provider bloc object, and gives the chance to dispose it when the page is destroyed. The stream builder is enclosed within a consumer widget's builder to get access to the provider's bloc.
