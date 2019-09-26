@@ -10,11 +10,10 @@ class CategoryPage extends StatelessWidget {
   const CategoryPage(this.category,{Key key,}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return DisposableProvider<ProductsBloc>(
-      value: ProductsBloc(category),
-      child: Scaffold(
+    return Scaffold(
         appBar: AppBar(),
-        body: Consumer<ProductsBloc>(
+        body: DisposableConsumer<ProductsBloc>(
+          value: ProductsBloc(category),
           builder: (context,bloc,child) => StreamBuilder<List<Product>>(
             stream: bloc.products,
             builder: (context,snapshot){
@@ -28,7 +27,6 @@ class CategoryPage extends StatelessWidget {
               } else return Center(child: CircularProgressIndicator(),);
             },),
         ),
-      ),
-    );
+      );
   }
 }
