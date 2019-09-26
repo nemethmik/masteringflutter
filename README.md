@@ -75,3 +75,23 @@ What is tricky here that the products bloc is created with a category parameter,
 If I used a global singleton products bloc, its products stream should have been defined as a broadcast stream to be ok to serve all category pages during the life of the application. 
 I think that would be a lot simpler solution since then we wouldn't need stateful pages, nor provider package, since a mobile application typically shows one page at a time, no need to create multiple products blocks. page specific blocs/query results could have even been cached in a global singleton bloc, too.
 So whatever hard I study and experiment in this area, I am fully convinced that a single application logic bloc, with broadcast streams could serve the entire application, or at least an entire module/workflow/business process (Goods Receipt, Delivery, Issue for Production, and so on).
+```dart
+class CategoryPage extends StatefulWidget {
+  final Category category;
+  const CategoryPage(this.category,{Key key,}) : super(key: key);
+  @override _CategoryPageState createState() => _CategoryPageState();
+}
+class _CategoryPageState extends State<CategoryPage> {
+  ProductsBloc bloc;
+  @override void dispose() {
+    bloc?.dispose(); // If bloc is not null dispose
+    super.dispose();
+  }
+  @override
+  Widget build(BuildContext context) {
+    bloc ??= ProductsBloc(widget.category); // If bloc is null, initialize it
+    return Scaffold(
+...      
+```
+In the code sample above, category entity/model object is received as a parameter, and the bloc is created in the state object is built. When the state object is disposed, it disposes the bloc, too.
+This is called cumbersome boiler-plate, which could be nicely eliminated with rearchitecting the application with using singleton blocs (with broadcast streams) only. 
