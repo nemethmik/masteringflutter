@@ -1,7 +1,6 @@
 import 'dart:async';
-
-import 'package:masteringflutter/blocprovider.dart';
 import 'package:masteringflutter/dbapi.dart';
+import 'disposable.dart';
 
 class Category {
   static const NAME = "name";
@@ -26,6 +25,7 @@ class CategoriesBloc implements Disposable {
   @override
   void dispose() {
     _categoryListStream.close();
+    print("*** ${this.runtimeType} is disposed");
   }
   CategoriesBloc() {
     getCategories();

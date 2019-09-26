@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:masteringflutter/blocprovider.dart';
 import 'package:masteringflutter/category.dart';
 import 'package:masteringflutter/dbapi.dart';
+
+import 'disposable.dart';
 class Product {
   static const NAME = "name";
   static const ID = "id";
@@ -29,6 +30,7 @@ class ProductsBloc implements Disposable {
   @override
   void dispose() {
     _productStream.close();
+    print("*** ${this.runtimeType} for ${_category.name} is disposed");
   }
   void getProducts() async {
     _productList = await DbApi.me.getProducts(_category);
