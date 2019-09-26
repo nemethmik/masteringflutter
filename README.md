@@ -177,3 +177,37 @@ class CategoryPage extends StatelessWidget {
               if(products != null) {
                 return GridView.builder(
 ```
+
+## DisposableProvider
+Here is my simple implementation of a provider of a disposable object
+```dart
+class DisposableProvider<T extends Disposable>  extends StatelessWidget { 
+  final Widget _child;
+  @required final T _disposable;
+  void _disposerProxy(BuildContext context, T value) {_disposable?.dispose();}
+  T _builderProxy(BuildContext context) => _disposable;
+  DisposableProvider({
+    @required T value,
+    Widget child,
+  }): _child = child, _disposable = value;
+  @override
+  Widget build(BuildContext context) => Provider<T>(builder: _builderProxy,dispose: _disposerProxy,child: _child,);
+}
+```
+And here is an example how to use it with a Consumer and Stream Builder
+```dart
+class CategoryPage extends StatelessWidget {
+  final Category category;
+  const CategoryPage(this.category,{Key key,}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return DisposableProvider<ProductsBloc>(
+      value: ProductsBloc(category),
+      child: Scaffold(
+        appBar: AppBar(),
+        body: Consumer<ProductsBloc>(
+          builder: (context,bloc,child) => StreamBuilder<List<Product>>(
+            stream: bloc.products,
+            builder: (context,snapshot){
+              if(snapshot.hasData) {
+```
