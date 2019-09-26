@@ -158,3 +158,22 @@ class CategoryPage extends StatelessWidget {
 ``` 
 So, the category stateless page has a mandatory parameter, which is guaranteed by the Dart compiler.
 The build function creates a products bloc provider widget, which actually builds a provider bloc object, and gives the chance to dispose it when the page is destroyed. The stream builder is enclosed within a consumer widget's builder to get access to the provider's bloc.
+
+## StreamProvider Gives no Disposability
+Stream provider along with Consumer would work, too, but stream provider has no dispose parameter, which is absolutely a no-no when working with streams. This is a big oversight and mistake, since it could have been the least cumbersome solution of all these provider possibilities. 
+```dart
+class CategoryPage extends StatelessWidget {
+  final Category category;
+  const CategoryPage(this.category,{Key key,}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return StreamProvider<List<Product>>(
+      builder: (context) => ProductsBloc(category).products,
+      //dispose: (context,bloc)=>bloc?.dispose(),
+      child: Scaffold(
+        appBar: AppBar(),
+        body: Consumer<List<Product>>(
+          builder: (context,products,child) {
+              if(products != null) {
+                return GridView.builder(
+```
