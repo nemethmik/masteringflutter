@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:masteringflutter/category.dart';
 import 'package:masteringflutter/product.dart';
-import 'package:provider/provider.dart';
+//import 'package:provider/provider.dart';
 
 import 'disposable.dart';
 
@@ -12,20 +12,19 @@ class CategoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(),
-        body: DisposableConsumer<ProductsBloc>(
+        body: DisposableStream<ProductsBloc,List<Product>>(
           value: ProductsBloc(category),
-          builder: (context,bloc,child) => StreamBuilder<List<Product>>(
-            stream: bloc.products,
-            builder: (context,snapshot){
-              if(snapshot.hasData) {
-                return GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-                  itemCount:  snapshot.data.length,
-                  itemBuilder: (context,index) =>
-                    ListTile(title: Text(snapshot.data[index].name),),
-                );  
-              } else return Center(child: CircularProgressIndicator(),);
-            },),
+          stream: (bloc) => bloc.products,
+          builder: (context,snapshot){
+            if(snapshot.hasData) {
+              return GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+                itemCount:  snapshot.data.length,
+                itemBuilder: (context,index) =>
+                  ListTile(title: Text(snapshot.data[index].name),),
+              );  
+            } else return Center(child: CircularProgressIndicator(),);
+          },
         ),
       );
   }

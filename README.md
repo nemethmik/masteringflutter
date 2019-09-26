@@ -250,3 +250,56 @@ class CategoryPage extends StatelessWidget {
               if(snapshot.hasData) {
 ```
 Practically a provider with an immediate consumer.
+
+## Disposable Stream Builder
+The top model of this series is this class. The value parameter expects a disposable object, typically a bloc.
+The stream is a function to return a stream, the function parameter is the bloc provided as the value. 
+initialData and builder are for the stream builder.
+The optional child is for the consumer. This value can be used within the builder as this.child.
+```dart
+class DisposableStream<T extends Disposable,D>  extends StatelessWidget {  
+  final Widget child;
+  @required final T _disposable;
+  final Stream<D> Function(T disposable) stream;
+  final D initialData;
+  void _disposerProxy(BuildContext context, T value) {_disposable?.dispose();}
+  T _builderProxy(BuildContext context) => _disposable;
+  final AsyncWidgetBuilder<D> builder;
+  DisposableStream({
+    @required T value,
+    this.stream,
+    this.initialData,
+    this.builder,
+    this.child,
+  }): _disposable = value;
+  @override
+  Widget build(BuildContext context) => Provider<T>(
+    builder: _builderProxy,
+    dispose: _disposerProxy,
+    child: Consumer<T>(
+      builder: (context,disposable,child) => StreamBuilder<D>(
+        stream: stream(disposable),
+        initialData: initialData,
+        builder: builder,), 
+      child: child),
+  );
+}
+```
+Here is an example how simple it is to use it.
+```dart
+class CategoryPage extends StatelessWidget {
+  final Category category;
+  const CategoryPage(this.category,{Key key,}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(),
+        body: DisposableStream<ProductsBloc,List<Product>>(
+          value: ProductsBloc(category),
+          stream: (bloc) => bloc.products,
+          builder: (context,snapshot){
+            if(snapshot.hasData) {
+```
+all this fuss is just to make give automated disposability within stateless widgets to the blocs.
+Practically this is a replacement for the stream builder where it consumes an auto-disposed bloc.
+If Dart had destructor machinery just like every major programming languages, this wouldn't be needed.
