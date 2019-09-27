@@ -9,6 +9,7 @@ class Product {
   static const NAME = "name";
   static const ID = "id";
   static const AMOUNT = "amount";
+  static const IMAGEURL = "imageUrl";
   Map<String,dynamic> data;
   Product.fromJson(String jsonString) {
     data = json.decode(jsonString);
@@ -19,6 +20,8 @@ class Product {
   set id(String v) {data[ID] = v;} 
   int get amount => data[AMOUNT]; 
   set amount(int v) {data[AMOUNT] = v;} 
+  String get imageUrl => data[IMAGEURL]; 
+  set imageUrl(String v) {data[IMAGEURL] = v;} 
 }
 
 class ProductsBloc implements Disposable {

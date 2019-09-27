@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:masteringflutter/cartbutton.dart';
 import 'package:masteringflutter/category.dart';
 import 'package:masteringflutter/categorypage.dart';
 import 'disposable.dart';
@@ -9,6 +10,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
         appBar: AppBar(
           title: Text("E-Commerce"),
+          actions: <Widget>[CartButton()],
         ),
         body: DisposableStream<CategoriesBloc,List<Category>>(
           value: CategoriesBloc(),

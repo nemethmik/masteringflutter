@@ -303,3 +303,10 @@ class CategoryPage extends StatelessWidget {
 all this fuss is just to make give automated disposability within stateless widgets to the blocs.
 Practically this is a replacement for the stream builder where it consumes an auto-disposed bloc.
 If Dart had destructor machinery just like every major programming languages, this wouldn't be needed.
+
+## RX Dart Behavior Subject
+Regular non-broadcast streams can be listened only once, and only by one listener, which is perfectly fine for receiving the data from a HTTP or databse request/query, when the data has been downloaded, the stream has to be closed.
+
+[BehaviorSubject](https://pub.dev/documentation/rxdart/latest/rx/BehaviorSubject-class.html) is broadcast stream, and emits the last item as the first item to any new listener. After that, any new events will be appropriately sent to the listeners. This means the Subject's stream can be listened to multiple times.
+
+This is exactly how LiveData streams behave in Android Architecture. These are not OK for sending events, for example.
